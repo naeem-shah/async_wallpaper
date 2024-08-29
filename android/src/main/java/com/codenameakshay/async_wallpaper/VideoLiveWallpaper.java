@@ -51,6 +51,22 @@ public class VideoLiveWallpaper extends WallpaperService {
         }
     }
 
+    public static void setLiveWallpaperByServiceName(Context context, String serviceName) {
+        WallpaperManager wallpaperManager = WallpaperManager.getInstance(context);
+        String packageName = context.getPackageName();
+
+        // Create ComponentName from strings
+        ComponentName componentName = new ComponentName(packageName, serviceName);
+
+        try {
+            // Set the live wallpaper using the ComponentName
+            wallpaperManager.setWallpaperComponent(componentName);
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Handle exceptions
+        }
+    }
+
     @Override
     public Engine onCreateEngine() {
         return new VideoEngine();

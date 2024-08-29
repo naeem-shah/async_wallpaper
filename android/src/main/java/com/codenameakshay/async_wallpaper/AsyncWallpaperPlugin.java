@@ -263,9 +263,14 @@ public class AsyncWallpaperPlugin extends Application implements FlutterPlugin, 
         }
         else if (call.method.equals("open_wallpaper_chooser")) {
             goToHome = call.argument("goToHome"); // .argument returns the correct type
-            // TODO: Add logic
             VideoLiveWallpaper mVideoLiveWallpaper = new VideoLiveWallpaper();
             mVideoLiveWallpaper.openWallpaperChooser(context);
+            result.success(true);
+        } else if (call.method.equals("set_live_wallpaper_service")) {
+            goToHome = call.argument("goToHome"); // .argument returns the correct type
+            String serviceName = call.argument("serviceName"); // .argument returns the correct type
+            VideoLiveWallpaper mVideoLiveWallpaper = new VideoLiveWallpaper();
+            mVideoLiveWallpaper.setLiveWallpaperByServiceName(context, serviceName);
             result.success(true);
         }
         else {

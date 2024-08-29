@@ -88,6 +88,10 @@ class AsyncWallpaper {
   /// Name for 'wallpaper_chooser' native function\
   static const String _OPEN_WALLPAPER_CHOOSER = 'open_wallpaper_chooser';
 
+  /// Name for 'wallpaper_chooser' native function\
+  static const String _SET_LIVE_WALLPAPER_SERVICE =
+      'set_live_wallpaper_service';
+
   /// Function to check working/validity of method channels
   static Future<String?> get platformVersion async {
     /// String to store the version number before returning. This is just to test working/validity.
@@ -394,6 +398,53 @@ class AsyncWallpaper {
 
     result = await _channel.invokeMethod(
       _OPEN_WALLPAPER_CHOOSER,
+      options,
+    );
+
+    if (toastDetails != null && result) {
+      Fluttertoast.showToast(
+        msg: toastDetails.message,
+        backgroundColor: toastDetails.backgroundColor,
+        fontSize: toastDetails.fontSize,
+        gravity: toastDetails.gravity,
+        textColor: toastDetails.textColor,
+        toastLength: toastDetails.toastLength,
+      );
+    }
+
+    if (errorToastDetails != null && !result) {
+      Fluttertoast.showToast(
+        msg: errorToastDetails.message,
+        backgroundColor: errorToastDetails.backgroundColor,
+        fontSize: errorToastDetails.fontSize,
+        gravity: errorToastDetails.gravity,
+        textColor: errorToastDetails.textColor,
+        toastLength: errorToastDetails.toastLength,
+      );
+    }
+
+    /// Function returns the bool result, use for debugging or showing toast message
+    return result;
+  }
+
+  /// Opens Android native wallpaper chooser
+  static Future<bool> setLiveWallpaperService({
+    required String serviceName,
+    bool goToHome = false,
+    ToastDetails? toastDetails,
+    ToastDetails? errorToastDetails,
+  }) async {
+    /// Variable to store operation result
+    bool result = false;
+
+    // The parameters for the method call
+    final options = {
+      'goToHome': goToHome,
+      'serviceName': serviceName,
+    };
+
+    result = await _channel.invokeMethod(
+      _SET_LIVE_WALLPAPER_SERVICE,
       options,
     );
 
