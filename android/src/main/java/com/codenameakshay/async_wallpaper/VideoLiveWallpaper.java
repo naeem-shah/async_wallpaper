@@ -68,7 +68,6 @@ public class VideoLiveWallpaper extends WallpaperService {
             // Handle exceptions
         }
     }
-    }
 
     @Override
     public Engine onCreateEngine() {
