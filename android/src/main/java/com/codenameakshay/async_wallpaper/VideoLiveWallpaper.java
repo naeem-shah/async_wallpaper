@@ -52,19 +52,22 @@ public class VideoLiveWallpaper extends WallpaperService {
     }
 
     public static void setLiveWallpaperByServiceName(Context context, String serviceName) {
-        WallpaperManager wallpaperManager = WallpaperManager.getInstance(context);
+        // Get the package name programmatically
         String packageName = context.getPackageName();
 
-        // Create ComponentName from strings
+        // Create the ComponentName
         ComponentName componentName = new ComponentName(packageName, serviceName);
 
         try {
-            // Set the live wallpaper using the ComponentName
-            wallpaperManager.setWallpaperComponent(componentName);
+            // Create an intent to set the live wallpaper
+            Intent intent = new Intent(WallpaperManager.ACTION_CHANGE_LIVE_WALLPAPER);
+            intent.putExtra(WallpaperManager.EXTRA_LIVE_WALLPAPER_COMPONENT, componentName);
+            context.startActivity(intent);
         } catch (Exception e) {
             e.printStackTrace();
             // Handle exceptions
         }
+    }
     }
 
     @Override
