@@ -28,6 +28,7 @@ class _MyAppState extends State<MyApp> {
   String _wallpaperUrlBoth = 'Unknown';
   String _liveWallpaper = 'Unknown';
   String _wallpaperChooser = 'Unknown';
+  String _liveWallpaperByService = 'Unknown';
   String url = 'https://images.unsplash.com/photo-1635593701810-3156162e184f';
   String liveUrl =
       'https://github.com/codenameakshay/sample-data/raw/main/video3.mp4';
@@ -373,6 +374,36 @@ class _MyAppState extends State<MyApp> {
     });
   }
 
+  // Platform messages are asynchronous, so we initialize in an async method.
+  Future<void> liveWallpaperByService() async {
+    setState(() {
+      _wallpaperChooser = 'Loading';
+    });
+    String result;
+    // Platform messages may fail, so we use a try/catch PlatformException.
+    try {
+      result = await AsyncWallpaper.setLiveWallpaperService(
+        serviceName: 'com.codenameakshay.async_wallpaper_example',
+        goToHome: goToHome,
+        toastDetails: ToastDetails.wallpaperChooser(),
+        errorToastDetails: ToastDetails.error(),
+      )
+          ? 'Wallpaper set'
+          : 'Failed to get wallpaper.';
+    } on PlatformException {
+      result = 'Failed to get wallpaper.';
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
+    setState(() {
+      _liveWallpaperByService = result;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -482,6 +513,16 @@ class _MyAppState extends State<MyApp> {
             ),
             Center(
               child: Text('Wallpaper status: $_wallpaperChooser\n'),
+            ),
+            ElevatedButton(
+              onPressed: liveWallpaperByService,
+              child: _liveWallpaperByService == 'Loading'
+                  ? const CircularProgressIndicator()
+                  : const Text('Open wallpaper chooser'),
+            ),
+            Center(
+              child: Text(
+                  'Set wallpaper by service name status: $_liveWallpaperByService\n'),
             ),
           ],
         ),
